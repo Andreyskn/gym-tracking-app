@@ -35,7 +35,7 @@ export default class ExerciseInput extends Component {
               backgroundColor: "green",
               height: 30
             }}
-            onPress={(value) => this.props.onSave(this.exercise)}
+            onPress={(value) => this.exercise ? this.props.onSave(this.exercise) : null}
           />
           <Button
             raised

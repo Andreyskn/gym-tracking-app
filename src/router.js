@@ -5,7 +5,8 @@ import SingleExercise from './single-exercise';
 import Training from './training';
 
 export default {
-  navigateAction: (routeName, params) => NavigationActions.navigate({ routeName, params })
+  navigateAction: (routeName, params) => NavigationActions.navigate({ routeName, params }),
+  pushAction: (routeName, params) => NavigationActions.push({ routeName, params }),
 }
 
 export const RootStack = createStackNavigator(
@@ -25,7 +26,6 @@ export const RootStack = createStackNavigator(
     Exercises: { 
       screen: Exercises,
       navigationOptions: {
-        title: 'Exercises',
         headerTitleStyle: {
           flex: 1,
           textAlign: 'right'
@@ -36,7 +36,6 @@ export const RootStack = createStackNavigator(
     SingleExercise: {
       screen: SingleExercise,
       navigationOptions: {
-        title: 'Exercise name',
         headerTitleStyle: {
           flex: 1,
           textAlign: 'right'
