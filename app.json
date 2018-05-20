@@ -1,5 +1,12 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+    "name": "Gym Tracker",
+    "icon": "./src/icon/app-icon.png",
+    "version": "1.0.0",
+    "slug": "gym-tracker",
+    "sdkVersion": "27.0.0",
+    "android": {
+      "package": "com.andreyskn.gymtracker"
+    }
   }
 }

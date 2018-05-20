@@ -60,8 +60,8 @@ export default class SingleExercise extends Component {
     const ceiledDiff = Math.ceil(diff);
     const diffMinute = Math.ceil(diff * 60);
 
-    if (diff < 1) {
-      return `${diffMinute} ${diffMinute > 1 ? 'minutes' : 'minute'} ago`;
+    if (diffMinute < 60) {
+      return diffMinute > 1 ? `${diffMinute} minutes ago` : 'Just now';
     } else if (diff < 24 && entryDay === today) {
       return `${ceiledDiff} ${ceiledDiff > 1 ? 'hours' : 'hour'} ago`;
     } else if (diff < 24 && entryDay !== today) {
@@ -84,7 +84,7 @@ export default class SingleExercise extends Component {
             {this.state.trainings.map((training, index) =>
               <View key={training.id} style={{ borderBottomWidth: 1, borderStyle: 'solid', borderColor: 'black', padding: 10 }}>
                 <View style={{ marginBottom: 10 }}>
-                  <Text style={{ color: 'red' }}>
+                  <Text style={{ color: 'green' }}>
                     {this.getDateDiff(training)}
                   </Text>
                 </View>
