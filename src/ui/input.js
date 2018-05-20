@@ -13,16 +13,14 @@ export default class ExerciseInput extends Component {
       }} >
         <TextInput
           style={{
-            borderColor: 'gray',
-            borderWidth: 1,
             flex: 1,
             padding: 10,
-            borderRadius: 4,
           }}
           placeholder='Enter exercise name'
           autoCorrect={false}
           multiline
           onChangeText={(text) => this.exercise = text}
+          autoFocus
         />
         <View style={{
           height: 90,

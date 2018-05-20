@@ -4,6 +4,7 @@ import { Button, Icon } from 'react-native-elements';
 import Styles from './styles';
 import Router from './router';
 import ExerciseInput from './ui/input';
+import OptionsButton from './ui/optionsButton';
 
 export default class Exercises extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -41,7 +42,8 @@ export default class Exercises extends Component {
 
   showInput = () => {
     this.setState({
-      showInput: true
+      showInput: true,
+      showOptions: false
     })
   }
 
@@ -106,9 +108,10 @@ export default class Exercises extends Component {
               <Button
                 title={exercise}
                 buttonStyle={{ ...Styles.buttonStyle, paddingRight: 30}}
-                onPress={() => 
-                  this.props.navigation.dispatch(Router.navigateAction('SingleExercise', { group: this.state.storageKey, exercise }))
-                }
+                onPress={() => {
+                  this.setState({ showOptions: false, showInput: false });
+                  this.props.navigation.dispatch(Router.navigateAction('SingleExercise', { group: this.state.storageKey, exercise }));
+                }}
               />
               <Button
                 buttonStyle={{ 
@@ -123,49 +126,11 @@ export default class Exercises extends Component {
                 icon={{ name: 'kebab-vertical', type: 'octicon', style: { marginRight: 0 } }}
               />
               {this.state.showOptions === exercise && 
-                <View style={{
-                  position: 'absolute',
-                  top: '50%',
-                  right: 70,
-                  backgroundColor: '#ffffff',
-                  width: 100,
-                  height: 50,
-                  zIndex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  transform: [{translateY: -25}]
-                }} >
-                  <Button
-                    buttonStyle={{
-                      width: 50,
-                      height: 50,
-                      backgroundColor: 'rgba(70, 70,250, 1)',
-                      borderColor: '#ffffff',
-                      borderWidth: 1,
-                    }}
-                    containerViewStyle={{
-                      marginRight: 0,
-                      marginLeft: 0
-                    }}
-                    onPress={() => { }}
-                    icon={{ name: 'edit', size: 24, style: { marginRight: 0 } }}
-                  />
-                  <Button
-                    buttonStyle={{
-                      width: 50,
-                      height: 50,
-                      backgroundColor: 'rgba(70, 70,250, 1)',
-                      borderColor: '#ffffff',
-                      borderWidth: 1,
-                    }}
-                    containerViewStyle={{
-                      marginRight: 0,
-                      marginLeft: 0
-                    }}
-                    onPress={() => { this.deleteExercise(exercise) }}
-                    icon={{ name: 'delete-forever', size: 24, style: { marginRight: 0 } }}
-                  />
-                </View>
+                <OptionsButton
+                  entry = {exercise}
+                  onDelete= {this.deleteExercise}
+                  editButton={false}
+                />
               }
             </View>
           )}
@@ -178,7 +143,7 @@ export default class Exercises extends Component {
           <Button
             title="Add new exercise"
             buttonStyle={{}}
-            onPress={this.showInput}
+            onPress={() => this.showInput()}
           />
         </View>
       </View>

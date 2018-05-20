@@ -75,14 +75,14 @@ export default class SingleExercise extends Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, paddingTop: 20 }}>
-          <View style={{ alignItems: 'center', marginBottom: 10 }}>
+          <View style={{ alignItems: 'center', paddingBottom: 10, borderBottomWidth: 1, borderStyle: 'solid', borderColor: 'black', }}>
             <Text>
               Exercise log
             </Text>
           </View>
           <ScrollView>
             {this.state.trainings.map((training, index) =>
-              <View key={training.id} style={{ borderTopWidth: 1, borderBottomWidth: 1, borderStyle: 'solid', borderColor: 'black', padding: 10 }}>
+              <View key={training.id} style={{ borderBottomWidth: 1, borderStyle: 'solid', borderColor: 'black', padding: 10 }}>
                 <View style={{ marginBottom: 10 }}>
                   <Text style={{ color: 'red' }}>
                     {this.getDateDiff(training)}
@@ -102,7 +102,7 @@ export default class SingleExercise extends Component {
                       Reps
                     </Text>
                     <Text>
-                      {training.data.map(el => el.reps).join('-')}
+                      {training.data.map(el => el.reps).join(' - ')}
                     </Text>
                   </View>
                   <View style={{ alignItems: 'center' }}>
@@ -129,6 +129,7 @@ export default class SingleExercise extends Component {
               this.props.navigation.dispatch(Router.navigateAction('Training', { 
                 storageKey: this.state.storageKey, 
                 updateStateFunc: this.updateTrainingState,
+                dateDiffFunc: this.getDateDiff,
               }))
             }
           />

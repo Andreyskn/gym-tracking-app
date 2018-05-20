@@ -3,6 +3,7 @@ import { AsyncStorage, View, TextInput, ScrollView, Text } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import Styles from './styles';
 import Router from './router';
+import OptionsButton from './ui/optionsButton';
 
 export default class Training extends Component {
   constructor(props) {
@@ -12,11 +13,14 @@ export default class Training extends Component {
     const storageKey = navigation.getParam('storageKey', 'no-data');
     const updateStateFunc = navigation.getParam('updateStateFunc', 'no-data');
 
+    this.getDateDiff = navigation.getParam('dateDiffFunc', 'no-data');
+
     this.state = {
-      sets: [{}],
+      sets: [{ id: Date.now() }],
       storageKey,
       updateStateFunc,
       lastTraining: null,
+      showOptions: false
     };
   }
 
@@ -40,7 +44,22 @@ export default class Training extends Component {
 
   handleInput(text, setId, type) {
     const sets = this.state.sets;
-    sets[setId][type] = text;
+    sets.map(set => set.id === setId ? set[type] = text : null);
+
+    this.setState({
+      sets
+    });
+  }
+
+  toggleOptions = (forEntry) => {
+    this.state.showOptions === forEntry ?
+      this.setState({ showOptions: false })
+      :
+      this.setState({ showOptions: forEntry })
+  }
+
+  deleteSet = (setId) => {
+    const sets = this.state.sets.filter((set) => set.id !== setId);
 
     this.setState({
       sets
@@ -69,44 +88,28 @@ export default class Training extends Component {
     }
   }
 
-  getDateDiff() {
-    const entryDate = new Date(this.state.lastTraining.id);
-    const now = Date.now();
-    const entryDay = entryDate.getDate();
-    const today = new Date().getDate();
-    const diff = (now - entryDate) / (1000 * 3600);
-    const ceiledDiff = Math.ceil(diff);
-    const diffMinute = Math.ceil(diff * 60);
-
-    if (diff < 1){
-      return `${diffMinute} ${diffMinute > 1 ? 'minutes' : 'minute'} ago`;
-    } else if (diff < 24 && entryDay === today) {
-      return `${ceiledDiff} ${ceiledDiff > 1 ? 'hours' : 'hour'} ago`;
-    } else if (diff < 24 && entryDay !== today) {
-      return `1 day ago`;
-    }
-
-    return `${Math.ceil(diff / 24)} days ago`;
-  }
-
   render() {
     const lastTraining = this.state.lastTraining;
 
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
+        <View style={{
+          flex: 1,
+          borderTopWidth: 1,
+          borderStyle: 'solid',
+          borderColor: 'black',
+        }}>
           {this.state.lastTraining !== null &&
             <View style={{ 
-              borderTopWidth: 1,
               borderBottomWidth: 1,
               borderStyle: 'solid',
               borderColor: 'black',
               padding: 10,
-            backgroundColor: '#dfdfdf'
+              backgroundColor: '#dfdfdf'
             }}>
               <View style={{ marginBottom: 10 }}>
                 <Text style={{ }}>
-                Last training - {this.getDateDiff()}
+                Last training - {this.getDateDiff(lastTraining)}
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
@@ -123,7 +126,7 @@ export default class Training extends Component {
                     Reps
                   </Text>
                   <Text>
-                    {lastTraining.data.map(el => el.reps).join('-')}
+                    {lastTraining.data.map(el => el.reps).join(' - ')}
                   </Text>
                 </View>
                 <View style={{ alignItems: 'center', flex: .3 }}>
@@ -131,65 +134,78 @@ export default class Training extends Component {
                     Weight
                   </Text>
                   <Text>
-                    {lastTraining.data.map(el => el.weight).join('-')}
+                    {lastTraining.data.map(el => el.weight).join(' - ')}
                   </Text>
                 </View>
               </View>
             </View>
           }
 
-          <ScrollView>
+          <ScrollView contentContainerStyle={{paddingBottom: 200}}>
             {this.state.sets.map((set, index) =>
-              <View key={index} style={{
+              <View key={set.id} style={{
                 borderBottomWidth: 1,
                 borderStyle: 'solid',
                 borderColor: 'black',
-                padding: 10,
+                paddingTop: 10,
+                paddingBottom: 10,
               }} >
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                  <View style={{ alignItems: 'center', flex: .3 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <View style={{ alignItems: 'center', flex: .25 }}>
                     <Text>
                       Set {index+1}:
                     </Text>
                   </View>
-                  <View style={{ alignItems: 'center', height: 60, flex: .3 }}>
+                  <View style={{ alignItems: 'center', height: 60, flex: .25 }}>
                     <Text>
                       Reps
                     </Text>
                       <TextInput
                         style={{
-                          borderColor: 'gray',
-                          borderWidth: 1,
                           flex: 1,
                           padding: 10,
-                          borderRadius: 4,
                           textAlign: 'center',
                           marginTop: 5,
                           height: 30
                         }}
                         keyboardType='phone-pad'
-                        onChangeText={(text) => this.handleInput(text, index, 'reps')}
+                        onChangeText={(text) => this.handleInput(text, set.id, 'reps')}
+                        onFocus={() => this.setState({ showOptions: false })}
                       />
                   </View>
-                  <View style={{ alignItems: 'center', flex: .3 }}>
+                  <View style={{ alignItems: 'center', flex: .25 }}>
                     <Text>
                       Weight
                     </Text>
                       <TextInput
                         style={{
-                          borderColor: 'gray',
-                          borderWidth: 1,
                           flex: 1,
                           padding: 10,
-                          borderRadius: 4,
                           textAlign: 'center',
                           marginTop: 5,
                           height: 30
                         }}
                         keyboardType='phone-pad'
-                        onChangeText={(text) => this.handleInput(text, index, 'weight')}
+                        onChangeText={(text) => this.handleInput(text, set.id, 'weight')}
+                        onFocus={() => this.setState({ showOptions: false })}
                       />
                   </View>
+                  <Button
+                    buttonStyle={{
+                      backgroundColor: 'transparent',
+                      flex: .2,
+                      paddingRight: 0,
+                    }}
+                    onPress={() => { this.toggleOptions(set.id) }}
+                    icon={{ name: 'kebab-vertical', type: 'octicon', style: { marginRight: 0, color: 'black' } }}
+                  />
+                  {this.state.showOptions === set.id &&
+                    <OptionsButton
+                      entry={set.id}
+                      onDelete={this.deleteSet}
+                      training = {true}
+                    />
+                  }
                 </View>
               </View>
             )}
@@ -204,7 +220,12 @@ export default class Training extends Component {
                   borderWidth: 0,
                   borderRadius: 5
                 }}
-                onPress={() => this.setState({ sets: [...this.state.sets, {}] })}
+                onPress={() => {
+                  this.setState({
+                    sets: [...this.state.sets, { id: Date.now() }],
+                    showOptions: false
+                  })
+                }}
               />
             </View>
           </ScrollView>

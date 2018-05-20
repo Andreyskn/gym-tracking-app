@@ -15,10 +15,10 @@ export const RootStack = createStackNavigator(
     Home: { 
       screen: HomeScreen,
       navigationOptions: {
-        headerTitle: 'Muscle groups',
+        headerTitle: 'Gym Tracker',
         headerTitleStyle: {
           flex: 1,
-          textAlign: 'right',
+          textAlign: 'center',
         }
       }
     },
